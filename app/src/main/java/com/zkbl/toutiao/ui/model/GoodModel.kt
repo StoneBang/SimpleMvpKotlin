@@ -1,4 +1,4 @@
-package com.zkbl.toutiao.mvp.model
+package com.zkbl.toutiao.ui.model
 
 /**
  * Create by StoneBang at 2021/9/12

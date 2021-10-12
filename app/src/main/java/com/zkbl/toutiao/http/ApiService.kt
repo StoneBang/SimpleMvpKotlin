@@ -1,8 +1,8 @@
 package com.zkbl.toutiao.http
 
-import com.zkbl.toutiao.mvp.model.BaseModel
-import com.zkbl.toutiao.mvp.model.GoodModel
-import com.zkbl.toutiao.mvp.model.ManuFactureModel
+import com.zkbl.toutiao.base.BaseModel
+import com.zkbl.toutiao.ui.model.GoodModel
+import com.zkbl.toutiao.ui.model.ManuFactureModel
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.GET

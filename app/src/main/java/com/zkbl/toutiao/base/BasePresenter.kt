@@ -1,4 +1,4 @@
-package com.zkbl.toutiao.mvp.presenter
+package com.zkbl.toutiao.base
 
 /**
  * Create by StoneBang at 2021/9/12

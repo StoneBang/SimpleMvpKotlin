@@ -1,4 +1,4 @@
-package com.zkbl.toutiao
+package com.zkbl.toutiao.base
 
 import android.app.Application
 import com.orhanobut.logger.AndroidLogAdapter

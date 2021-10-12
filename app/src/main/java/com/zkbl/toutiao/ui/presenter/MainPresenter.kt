@@ -1,13 +1,12 @@
-package com.zkbl.toutiao.ui.main.presenter
+package com.zkbl.toutiao.ui.presenter
 
-import android.widget.Toast
 import com.zkbl.toutiao.http.HttpUtil
 import com.zkbl.toutiao.http.ResponseListener
-import com.zkbl.toutiao.mvp.model.BaseModel
-import com.zkbl.toutiao.mvp.model.GoodModel
-import com.zkbl.toutiao.mvp.model.ManuFactureModel
-import com.zkbl.toutiao.mvp.presenter.BasePresenter
-import com.zkbl.toutiao.ui.main.view.MainView
+import com.zkbl.toutiao.base.BaseModel
+import com.zkbl.toutiao.ui.model.GoodModel
+import com.zkbl.toutiao.ui.model.ManuFactureModel
+import com.zkbl.toutiao.base.BasePresenter
+import com.zkbl.toutiao.ui.view.MainView
 
 /**
  * Create by StoneBang at 2021/9/12

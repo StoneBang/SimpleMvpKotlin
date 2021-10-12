@@ -1,11 +1,17 @@
 package com.zkbl.toutiao.http
 
 import android.util.Log
-import com.orhanobut.logger.Logger
 import com.zkbl.toutiao.base.Constant
-import com.zkbl.toutiao.mvp.model.BaseModel
-import com.zkbl.toutiao.mvp.model.GoodModel
-import com.zkbl.toutiao.mvp.model.ManuFactureModel
+import com.zkbl.toutiao.base.BaseModel
+import com.zkbl.toutiao.bean.GithubUser
+import com.zkbl.toutiao.http.github.GithubService
+import com.zkbl.toutiao.ui.model.GoodModel
+import com.zkbl.toutiao.ui.model.ManuFactureModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
@@ -16,6 +22,8 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 
 /**
@@ -56,6 +64,45 @@ object HttpUtil {
 
     }
 
+      fun getGithubUserInfo(userName:String): Flow<GithubUser> {
+        return  flow<GithubUser> {
+            var call =  createApi(GithubService::class.java).getUserDataCommon(userName)
+            emit(
+                suspendCancellableCoroutine {
+                    continuation->
+                        call.enqueue(object :Callback<GithubUser>{
+                            override fun onResponse(
+                                call: Call<GithubUser>,
+                                response: Response<GithubUser>
+                            ) {
+                                continuation.resume(response.body() as GithubUser)
+                            }
+                            override fun onFailure(call: Call<GithubUser>, t: Throwable) {
+                                continuation.resumeWithException(t)
+                            }
+                        })
+                    continuation.invokeOnCancellation { call.cancel() }
+                }
+            )
+        }.flowOn(Dispatchers.IO)
+    }
+
+    fun getGithubUserInfoCommon(userName:String): GithubUser?{
+         createApi(GithubService::class.java).getUserDataCommon(userName).enqueue(object :
+             Callback<GithubUser> {
+             override fun onResponse(call: Call<GithubUser>, response: Response<GithubUser>) {
+                 println("普通的请求结果"+response.body())
+             }
+
+             override fun onFailure(call: Call<GithubUser>, t: Throwable) {
+                 TODO("Not yet implemented")
+             }
+
+         })
+
+        return null
+    }
+
     fun getGoodList(listener:ResponseListener<BaseModel<List<GoodModel>>>){
         var res = createApi(ApiService::class.java).getGoodList()
         res.enqueue(object : Callback<BaseModel<List<GoodModel>>> {
@@ -76,8 +123,8 @@ object HttpUtil {
         var res = createApi(ApiService::class.java).getManufacturerList()
         res.enqueue(object : Callback<BaseModel<List<ManuFactureModel>>> {
             override fun onResponse(
-                    call: Call<BaseModel<List<ManuFactureModel>>>,
-                    response: Response<BaseModel<List<ManuFactureModel>>>
+                call: Call<BaseModel<List<ManuFactureModel>>>,
+                response: Response<BaseModel<List<ManuFactureModel>>>
             ) {
                 listener.onSuccess(response.body() as BaseModel<List<ManuFactureModel>>)
             }
@@ -87,6 +134,10 @@ object HttpUtil {
             }
         })
     }
+
+    /**
+     * 获得github上的用户信息
+     */
 
     fun <T> createApi(clazz: Class<T>):T{
         var retrofit = Retrofit
